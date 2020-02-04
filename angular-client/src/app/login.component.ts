@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import {AppService} from './app.service'
 
 @Component({
@@ -47,6 +47,23 @@ export class LoginComponent {
 
     login() {
         this._service.obtainAccessToken(this.loginData);
+    }
+
+    register() {
+        let params = new URLSearchParams();
+        params.append('username', this.registerData.username);
+        params.append('password', this.registerData.password);
+        params.append('email', this.registerData.email);
+        let headers =
+              new Headers({'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+              'Authorization': 'Basic '+btoa("clientPassword:secret")});
+        let options = new RequestOptions({ headers: headers });
+        this._http.post('http://localhost:8080/register',
+            params.toString(), options)
+            .map(res => res.json())
+            .subscribe(
+                data => data,
+                err => alert('Invalid Credentials'));
     }
 
 // TODO: Add registration request
